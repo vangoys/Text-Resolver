@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Text Resolver</title>
+    <link rel="stylesheet" href="src/normalize.css">
+    <link href="src/style.css" rel="stylesheet" type="text/css" />
+</head>
+<body onload="getDiff()">
+    <div class="container">
+        <h2 style="text-align: center;">Text Resolver Helper</h2>
+        <div class="row">
+            <div class="col-md-6">
+                <h4 class="text-center">Text One</h4>
+                <textarea rows="10" class="textarea-design" id="string1" title="string1">function reverseStr(str) {
+                        return str.split("").reverse().join("");
+                    }
+                    alert(reverseStr("Hello"));</textarea>
+            </div>
+            <div class="col-md-6">
+                <h4 class="text-center">Text Two</h4>
+                <textarea rows="10" class="textarea-design" id="string2" title="string2">function reverseStr(str) {
+                        var newStr = '', i;
+                        for (i = str.length - 1; i >= 0; i--) {
+                            newStr += str.charAt(i);
+                        }
+                        return newStr;
+                    }
+                    alert(reverseStr('Hello'));</textarea>
+            </div>
+        </div>
+        <div class="row" style="margin: 30px 0">
+            <div class="col-md-12 text-center">
+                <button onclick="getDiff()" class="btn btn-primary">Show Differences</button>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <table class="table table-diff">
+                    <thead>
+                        <tr>
+                            <th>Text One</th>
+                            <th>&nbsp;</th>
+                            <th>Text Two</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table-diff-body">
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript" src="src/text-diff.js"></script>
+    <script>
+        function getDiff() {
+            let text1 = document.getElementById("string1").value;
+            let text2 = document.getElementById("string2").value;
+
+            let diff = StringDiffHelper.lineOutputBuilder(text1, text2);
+
+            showDiff(diff);
+        }
+
+        function showDiff(diff) {
+            let tbody = document.getElementById("table-diff-body");
+            let tbodyHtml = '';
+
+            diff.forEach((i) => {
+                tbodyHtml += '<tr>' +
+                        '<td class="'+remarkToClass1(i.remark)+'">'+i.diff1+'</td>' +
+                        '<td>'+i.remark+'</td>' +
+                        '<td class="'+remarkToClass2(i.remark)+'">'+i.diff2+'</td>' +
+                    '</tr>';
+            });
+
+            tbody.innerHTML = tbodyHtml;
+        }
+
+        function remarkToClass1(remark) {
+            if(remark === '+') {
+                return 'removed';
+            }
+
+            if(remark === '=') {
+                return '';
+            }
+
+            return 'updated';
+        }
+
+        function remarkToClass2(remark) {
+            if(remark === '-') {
+                return 'removed';
+            }
+
+            if(remark === '=') {
+                return '';
+            }
+
+            return 'updated';
+        }
+    </script>
+</body>
+</html>
